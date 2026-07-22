@@ -56,7 +56,8 @@
         <div class="chart-head">
           <div>
             <span class="tag" id="stockSector">—</span>
-            <h2 id="stockName" style="margin:.3em 0 0;">—</h2>
+            <h2 id="stockName" style="margin:.3em 0 0;display:inline;">—</h2>
+<button id="watchlistBtn" class="btn btn-ghost btn-sm" style="margin-left:8px;vertical-align:middle;" title="Save to watchlist">☆ Watch</button>
             <div class="chart-price mono" id="stockPrice">—</div>
             <div class="mono" id="stockChange"></div>
           </div>
@@ -116,6 +117,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="js/main.js"></script>
+<script src="js/auth-client.js"></script>
+<script src="js/watchlist-client.js"></script>
 <script src="js/live-data.js"></script>
 <script>
   let currentTicker = null;
@@ -270,24 +273,55 @@
     document.getElementById('statExplain').textContent =
       `${s.t}'s 5-day average is ${trendUp ? 'above' : 'below'} its 20-day average, based on real daily closes. Recent day-to-day volatility of ±$${vol.toFixed(2)} is normal.`;
   }
+let watchlistCache = null;
 
-  document.addEventListener('DOMContentLoaded', ()=>{
+  async function loadWatchlistCache(){
+    if(!window.LedgerAuth.get()){ watchlistCache = null; return; }
+    const res = await window.LedgerWatchlist.list();
+    watchlistCache = res.ok ? res.tickers : [];
+  }
+
+  function updateWatchlistButton(){
+    const btn = document.getElementById('watchlistBtn');
+    if(!btn) return;
+    if(!window.LedgerAuth.get()){
+      btn.textContent = '☆ Log in to watch';
+      btn.onclick = ()=>{ location.href = 'account.html'; };
+      return;
+    }
+    const isWatched = !!(watchlistCache && watchlistCache.includes(currentTicker));
+    btn.textContent = isWatched ? '★ Watching' : '☆ Watch';
+    btn.onclick = async ()=>{
+      btn.disabled = true;
+      if(isWatched) await window.LedgerWatchlist.remove(currentTicker);
+      else await window.LedgerWatchlist.add(currentTicker);
+      await loadWatchlistCache();
+      btn.disabled = false;
+      updateWatchlistButton();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', async ()=>{
     populateControls();
-   const initial = decodeURIComponent(location.hash.slice(1));
+    const initial = decodeURIComponent(location.hash.slice(1));
     currentTicker = (initial && window.LedgerStocks.find(s=>s.t===initial.toUpperCase())) ? initial.toUpperCase() : window.LedgerStocks[0].t;
     document.getElementById('tickerSearch').value = currentTicker;
     render();
 
+    await window.LedgerAuth.checkSession();
+    await loadWatchlistCache();
+    updateWatchlistButton();
+
     document.getElementById('tickerSearch').addEventListener('input', (e)=>{
       if(!window.LedgerRateLimiter.allow('search', 20, 10000)) return;
       const found = findStock(e.target.value);
-      if(found){ currentTicker = found.t; render(); }
+      if(found){ currentTicker = found.t; render(); updateWatchlistButton(); }
     });
     document.getElementById('sectorFilter').addEventListener('change', (e)=>{
       const sector = e.target.value;
       if(!sector) return;
       const first = window.LedgerStocks.find(s=>s.s===sector);
-      if(first){ currentTicker = first.t; document.getElementById('tickerSearch').value = first.t; render(); }
+      if(first){ currentTicker = first.t; document.getElementById('tickerSearch').value = first.t; render(); updateWatchlistButton(); }
     });
     document.querySelectorAll('.range-btn').forEach(btn=>{
       btn.addEventListener('click', ()=>{
