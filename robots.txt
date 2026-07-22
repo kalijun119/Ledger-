@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://melodious-treacle-fbf352.netlify.app/sitemap.xml
+
