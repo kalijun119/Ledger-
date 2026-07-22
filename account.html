@@ -116,7 +116,13 @@
           </div>
           <button class="btn btn-ghost btn-sm" id="logoutBtn" style="margin-top:18px;">Log out</button>
         </div>
-
+<div class="session-box" style="margin-top:20px;">
+          <span class="eyebrow">My watchlist</span>
+          <div id="watchlistEmpty" style="display:none;">
+            <p style="font-size:.85rem;margin-top:10px;">Nothing saved yet — star a stock from its Analysis page to add it here.</p>
+          </div>
+          <div id="watchlistItems" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
         <div class="session-box" style="margin-top:20px;">
           <span class="eyebrow">Change password</span>
           <div class="alert alert-error" id="pwError" style="margin-top:12px;"></div>
@@ -155,6 +161,7 @@
 
 <script src="js/main.js"></script>
 <script src="js/auth-client.js"></script>
+<script src="js/watchlist-client.js"></script>
 <script>
   function showAlert(kind, msg){
     const err = document.getElementById('authError'), ok = document.getElementById('authSuccess');
@@ -179,7 +186,32 @@
       document.getElementById('welcomeEmail').textContent = user.email;
       const joinedEl = document.getElementById('welcomeJoined');
       if(joinedEl) joinedEl.textContent = user.joined ? new Date(user.joined).toLocaleDateString() : '—';
+      renderWatchlist();
     }
+  }
+
+  async function renderWatchlist(){
+    const itemsEl = document.getElementById('watchlistItems');
+    const emptyEl = document.getElementById('watchlistEmpty');
+    if(!itemsEl) return;
+    const res = await window.LedgerWatchlist.list();
+    const tickers = res.ok ? res.tickers : [];
+    emptyEl.style.display = tickers.length ? 'none' : 'block';
+    itemsEl.innerHTML = tickers.map((t)=>{
+      const s = window.LedgerStocks.find(x=>x.t===t);
+      const label = s ? `${s.t} · ${s.n}` : t;
+      return `<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid var(--rule);border-radius:var(--radius);padding:10px 14px;">
+        <a href="analysis.html#${t}" class="mono" style="font-weight:600;">${label}</a>
+        <button class="btn btn-ghost btn-sm" data-remove="${t}">Remove</button>
+      </div>`;
+    }).join('');
+    itemsEl.querySelectorAll('[data-remove]').forEach((btn)=>{
+      btn.addEventListener('click', async ()=>{
+        btn.disabled = true;
+        await window.LedgerWatchlist.remove(btn.dataset.remove);
+        renderWatchlist();
+      });
+    });
   }
 
   function switchAuthPanel(panelId){
