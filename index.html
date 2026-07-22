@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledger — Market analysis, signals &amp; sector intelligence</title>
+<meta name="description" content="Ledger monitors the market across sectors, charts every move, and explains it in plain language.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .img-fallback{ background: linear-gradient(135deg,#0B1220,#1c2c47 60%,#B08D57); }
+  .img-fallback img{ opacity:0; }
+</style>
+</head>
+<body>
+
+<div class="ticker-wrap"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>
+      Ledger
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+      <a href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M12 19V5M20 19v-6"/></svg>Analysis</a>
+      <a href="leaderboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8M12 17v4M6 4h12v4a6 6 0 01-12 0V4z"/></svg>Leaderboard</a>
+      <a href="signals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Move signals</a>
+      <a href="faq.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2 1.8-2 3.2M12 17h.01"/></svg>FAQ</a>
+      <a href="account.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>Account</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="account.html" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="account.html" class="btn btn-brass btn-sm">Create account</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Market intelligence, plainly stated</span>
+        <h1>Watch the tape.<br>Understand the move.</h1>
+        <p class="hero-lede">Ledger tracks price action across ten sectors, charts it against real history, and explains — in plain English — what's driving the gainers and the decliners. No hype, no black box.</p>
+        <div class="hero-actions">
+          <a href="analysis.html" class="btn btn-primary">Start analyzing a stock</a>
+          <a href="account.html" class="btn btn-ghost">Create a free account</a>
+        </div>
+        <p class="disclaimer" style="margin-top:1.4rem;max-width:48ch;">Educational tool only — not financial advice.Live prices come from third-party market-data providers when connected. See the FAQ for details.</p>
+      </div>
+      <div class="hero-media img-fallback">
+        <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1200&q=80" alt="Candlestick stock chart displayed on a trading screen" onerror="this.parentElement.classList.add('img-fallback')">
+        <span class="hero-media-tag">
+          <span class="badge-live"><span class="dot"></span>Live Feed</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="stat-strip container" style="padding-left:0;padding-right:0;">
+    <div class="stat"><div class="num mono" id="statCount">30</div><div class="lbl">Stocks tracked</div></div>
+    <div class="stat"><div class="num mono">10</div><div class="lbl">Sectors covered</div></div>
+    <div class="stat"><div class="num mono">~15s</div><div class="lbl">Live refresh<footer/div></div>
+    <div class="stat"><div class="num mono" id="statUp">–</div><div class="lbl">Advancing right now</div></div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Every sector, one dashboard</h2>
+        <a href="leaderboard.html" class="btn btn-ghost btn-sm">View full leaderboard</a>
+      </div>
+      <div class="sector-row" id="sectorChips"></div>
+    </div>
+  </section>
+
+  <hr class="hairline">
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Composite snapshot</span>
+          <h2>Ledger 24 — equal-weight composite</h2>
+        </div>
+        <span class="badge-live"><span class="dot"></span>Updating</span>
+      </div>
+      <div class="chart-panel">
+        <div class="chart-head">
+          <div>
+            <div class="chart-price mono" id="compositePrice">—</div>
+            <div class="mono" id="compositeChange" style="font-size:.85rem;"></div>
+          </div>
+        </div>
+        <div class="chart-canvas-holder"><canvas id="compositeChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline">
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>Built to be useful, not flashy</h2></div>
+      <div class="grid-3">
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V9M12 19V5M20 19v-6"/></svg>
+          <h3>Real analysis, not vibes</h3>
+          <p>Every ticker page shows the actual trend, moving averages, and volatility — the same inputs a technical read relies on — with the math shown, not hidden.</p>
+        </div>
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>
+          <h3>Signals with their reasoning shown</h3>
+          <p>The "move your money" page never gives a bare verdict — it shows exactly which indicators produced it, and how confident it is.</p>
+        </div>
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+          <h3>Organized the way you think</h3>
+          <p>Tech, AI, aerospace, agriculture, automotive, energy, healthcare, financials — filter the whole market by the industries you actually follow.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container"
+      <div class="grid-3">
+        <div class="hero-media img-fallback" style="aspect-ratio:1;">
+          <img style="aspect-ratio:1;" src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=600&q=80" alt="Wheat field representing agricultural sector" onerror="this.parentElement.classList.add('img-fallback')">
+        </div>
+        <div class="hero-media img-fallback" style="aspect-ratio:1;">
+          <img style="aspect-ratio:1;" src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=600&q=80" alt="Circuit board representing the technology sector" onerror="this.parentElement.classList.add('img-fallback')">
+        </div>
+        <div class="hero-media img-fallback" style="aspect-ratio:1;">
+          <img style="aspect-ratio:1;" src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=600&q=80" alt="Financial district skyline at dusk" onerror="this.parentElement.classList.add('img-fallback')">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline">
+
+  <section class="section">
+    <div class="container text-center" style="max-width:640px;margin:0 auto;">
+      <h2>Follow the tape from a free account</h2>
+      <p>Save the sectors you care about and get to your leaderboard faster next time.</p>
+      <a href="account.html" class="btn btn-primary">Create your free account</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:1.1rem;">Ledger</h4>
+        <p style="color:#9BA1AE;font-size:.86rem;max-width:32ch;">A clear, honest read on the market — for educational purposes, not financial advice. Educational tool ONLY — not a registered investment advisor.</p>
+      </div>
+      <div><h4>Product</h4>
+        <a href="analysis.html">Analysis</a><a href="leaderboard.html">Leaderboard</a><a href="signals.html">Move signals</a>
+      </div>
+      <div><h4>Company</h4>
+        <a href="faq.html">FAQ</a><a href="account.html">Account</a>
+      </div>
+      <div><h4>Legal</h4>
+        <a href="terms.html">Terms of Service</a><a href="privacy.html">Privacy Policy</a><a href="faq.html#disclaimer">Disclaimer</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Ledger. Educational demo — not a registered investment advisor.</span>
+      <span>Real Market data — see FAQ</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="js/main.js"></script>
+<script src="js/live-data.js"></script>
+<script>
+  function renderSectorChips(){
+    const wrap = document.getElementById('sectorChips');
+    if(!wrap) return;
+    wrap.innerHTML = window.LedgerSectors.map(s=>{
+      const count = window.LedgerStocks.filter(x=>x.s===s).length;
+      return `<a class="chip" href="leaderboard.html#${encodeURIComponent(s)}">${s} · ${count}</a>`;
+    }).join('');
+  }
+
+  function updateStats(){
+    const up = window.LedgerStocks.filter(s=>window.LedgerPct(s) >= 0).length;
+    const el = document.getElementById('statUp');
+    if(el) el.textContent = up + ' / ' + window.LedgerStocks.length;
+  }
+
+  let compositeChart;
+  function compositeSeries(){
+    const len = window.LedgerStocks[0].history.length;
+    const series = [];
+    for(let i=0;i<len;i++){
+      let sum = 0;
+      window.LedgerStocks.forEach(s=> sum += (s.history[i] / s.history[0]));
+      series.push(+(100 * sum / window.LedgerStocks.length).toFixed(2));
+    }
+    return series;
+  }
+
+  function renderComposite(){
+    const series = compositeSeries();
+    const priceEl = document.getElementById('compositePrice');
+    const chgEl = document.getElementById('compositeChange');
+    const last = series[series.length-1], first = series[0];
+    const chg = ((last-first)/first*100);
+    if(priceEl) priceEl.textContent = last.toFixed(2);
+    if(chgEl){ chgEl.textContent = (chg>=0?'▲ ':'▼ ') + Math.abs(chg).toFixed(2) + '% today'; chgEl.className = 'mono ' + (chg>=0?'pos':'neg'); }
+    const ctx = document.getElementById('compositeChart');
+    if(!ctx) return;
+    const color = chg>=0 ? '#12694F' : '#A6303B';
+    const labels = window.LedgerTimeLabels(series.length);
+    if(compositeChart){
+      compositeChart.data.datasets[0] = window.LedgerLineDataset(series, color);
+      compositeChart.update('none');
+    } else {
+      compositeChart = new Chart(ctx, {
+        type:'line',
+        data:{ labels, datasets:[ window.LedgerLineDataset(series, color) ] },
+        options: window.LedgerChartOptionsBase()
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', ()=>{ renderSectorChips(); updateStats(); renderComposite(); });
+  document.addEventListener('ledger:tick', ()=>{ updateStats(); renderComposite(); });
+</script>
+</body>
+</html>

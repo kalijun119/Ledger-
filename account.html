@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account — Ledger</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="ticker-wrap"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>
+      Ledger
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+      <a href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M12 19V5M20 19v-6"/></svg>Analysis</a>
+      <a href="leaderboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8M12 17v4M6 4h12v4a6 6 0 01-12 0V4z"/></svg>Leaderboard</a>
+      <a href="signals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Move signals</a>
+      <a href="faq.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2 1.8-2 3.2M12 17h.01"/></svg>FAQ</a>
+      <a href="account.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>Account</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="account.html" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="account.html" class="btn btn-brass btn-sm">Create account</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <div class="container auth-wrap">
+
+      <div id="loggedOutView">
+        <div class="text-center" style="margin-bottom:24px;">
+          <span class="eyebrow">Account</span>
+          <h1 style="font-size:1.8rem;">Welcome to Ledger</h1>
+          <p>A free account remembers nothing about the market for you — yet — but it's the foundation everything else here builds on.</p>
+        </div>
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="signup">Create account</button>
+          <button class="auth-tab" data-tab="login">Log in</button>
+        </div>
+
+        <div class="alert alert-error" id="authError"></div>
+        <div class="alert alert-success" id="authSuccess"></div>
+
+        <div class="auth-panel active" id="signupPanel">
+          <form id="signupForm" novalidate>
+            <div class="field"><label for="suName">Full name</label><input type="text" id="suName" required minlength="2"></div>
+            <div class="field"><label for="suEmail">Email</label><input type="email" id="suEmail" required></div>
+            <div class="field"><label for="suPass">Password</label><input type="password" id="suPass" required minlength="8" placeholder="At least 8 characters, with a letter and a number"></div>
+            <div class="field">
+              <label for="suSecurityQuestion">Security question (for password resets)</label>
+              <select id="suSecurityQuestion" required>
+                <option value="">Choose a question…</option>
+                <option value="What was the name of your first pet?">What was the name of your first pet?</option>
+                <option value="What city were you born in?">What city were you born in?</option>
+                <option value="What was the make of your first car?">What was the make of your first car?</option>
+                <option value="What was the name of your elementary school?">What was the name of your elementary school?</option>
+                <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+              </select>
+            </div>
+            <div class="field"><label for="suSecurityAnswer">Your answer</label><input type="text" id="suSecurityAnswer" required></div>
+            <button type="submit" class="btn btn-primary btn-block">Create free account</button>
+          </form>
+        </div>
+
+        <div class="auth-panel" id="loginPanel">
+          <form id="loginForm" novalidate>
+            <div class="field"><label for="liEmail">Email</label><input type="email" id="liEmail" required></div>
+            <div class="field"><label for="liPass">Password</label><input type="password" id="liPass" required></div>
+            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+          </form>
+          <button type="button" class="btn btn-ghost btn-sm btn-block" id="showForgotBtn" style="margin-top:10px;">Forgot password?</button>
+        </div>
+
+        <div class="auth-panel" id="forgotPanel">
+          <form id="forgotEmailForm" novalidate>
+            <div class="field"><label for="frEmail">Your account email</label><input type="email" id="frEmail" required></div>
+            <button type="submit" class="btn btn-primary btn-block">Continue</button>
+          </form>
+          <form id="forgotAnswerForm" novalidate style="display:none;margin-top:16px;">
+            <p class="mono" id="frQuestion" style="font-size:.9rem;margin-bottom:12px;"></p>
+            <div class="field"><label for="frAnswer">Your answer</label><input type="text" id="frAnswer" required></div>
+            <div class="field"><label for="frNewPass">New password</label><input type="password" id="frNewPass" required minlength="8" placeholder="At least 8 characters, with a letter and a number"></div>
+            <button type="submit" class="btn btn-primary btn-block">Reset password</button>
+          </form>
+          <button type="button" class="btn btn-ghost btn-sm" id="backToLoginBtn" style="margin-top:14px;">← Back to log in</button>
+        </div>
+
+        <p class="form-note">Your account is saved securely and will still be there the next time you log in — your password is never stored in plain text.</p>
+      </div>
+
+      <div id="loggedInView" style="display:none;">
+        <div class="session-box">
+          <span class="eyebrow">Signed in</span>
+          <h2 id="welcomeName" style="margin:.3em 0 4px;">—</h2>
+          <p class="mono" id="welcomeEmail" style="font-size:.85rem;"></p>
+          <p style="font-size:.82rem;color:var(--slate-dim);margin-top:2px;">Member since <span id="welcomeJoined"></span></p>
+          <hr class="hairline" style="margin:16px 0;">
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+            <a href="leaderboard.html" class="btn btn-ghost btn-sm">Leaderboard</a>
+            <a href="signals.html" class="btn btn-ghost btn-sm">Move signals</a>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="logoutBtn" style="margin-top:18px;">Log out</button>
+        </div>
+
+        <div class="session-box" style="margin-top:20px;">
+          <span class="eyebrow">Change password</span>
+          <div class="alert alert-error" id="pwError" style="margin-top:12px;"></div>
+          <div class="alert alert-success" id="pwSuccess"></div>
+          <form id="changePasswordForm" novalidate>
+            <div class="field"><label for="currentPassword">Current password</label><input type="password" id="currentPassword" required></div>
+            <div class="field"><label for="newPassword">New password</label><input type="password" id="newPassword" required minlength="8" placeholder="At least 8 characters, with a letter and a number"></div>
+            <button type="submit" class="btn btn-primary btn-block">Update password</button>
+          </form>
+        </div>
+
+        <div class="session-box" style="margin-top:20px;border-color:var(--red);">
+          <span class="eyebrow" style="color:var(--red);">Delete account</span>
+          <p style="font-size:.85rem;margin-top:10px;">This permanently removes your account and everything tied to it. This cannot be undone.</p>
+          <div class="alert alert-error" id="delError"></div>
+          <form id="deleteAccountForm" novalidate>
+            <div class="field"><label for="deletePassword">Confirm your password</label><input type="password" id="deletePassword" required></div>
+            <button type="submit" class="btn btn-block" style="background:var(--red);color:#fff;">Permanently delete my account</button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 Ledger. Educational tool — not a registered investment advisor.</span>
+      <span>Live market data — see FAQ</span>
+      <span><a href="terms.html" style="color:inherit;">Terms</a> · <a href="privacy.html" style="color:inherit;">Privacy</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/auth-client.js"></script>
+<script>
+  function showAlert(kind, msg){
+    const err = document.getElementById('authError'), ok = document.getElementById('authSuccess');
+    err.classList.remove('show'); ok.classList.remove('show');
+    if(kind==='error'){ err.textContent = msg; err.classList.add('show'); }
+    else { ok.textContent = msg; ok.classList.add('show'); }
+  }
+
+  function showFormAlert(errId, okId, kind, msg){
+    const err = document.getElementById(errId), ok = document.getElementById(okId);
+    err.classList.remove('show'); ok.classList.remove('show');
+    if(kind==='error'){ err.textContent = msg; err.classList.add('show'); }
+    else { ok.textContent = msg; ok.classList.add('show'); }
+  }
+
+  function refreshSessionUI(){
+    const user = window.LedgerAuth.get();
+    document.getElementById('loggedOutView').style.display = user ? 'none' : 'block';
+    document.getElementById('loggedInView').style.display = user ? 'block' : 'none';
+    if(user){
+      document.getElementById('welcomeName').textContent = user.name;
+      document.getElementById('welcomeEmail').textContent = user.email;
+      const joinedEl = document.getElementById('welcomeJoined');
+      if(joinedEl) joinedEl.textContent = user.joined ? new Date(user.joined).toLocaleDateString() : '—';
+    }
+  }
+
+  function switchAuthPanel(panelId){
+    document.querySelectorAll('.auth-panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+    document.getElementById('authError').classList.remove('show');
+    document.getElementById('authSuccess').classList.remove('show');
+  }
+
+  document.addEventListener('DOMContentLoaded', async ()=>{
+    await window.LedgerAuth.checkSession();
+    refreshSessionUI();
+
+    document.querySelectorAll('.auth-tab').forEach(tab=>{
+      tab.addEventListener('click', ()=>{
+        document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        switchAuthPanel(tab.dataset.tab+'Panel');
+      });
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if(!window.LedgerRateLimiter.allow('signup', 5, 60000)){
+        showAlert('error', 'Too many attempts — please wait a minute before trying again.');
+        return;
+      }
+      const name = document.getElementById('suName').value.trim();
+      const email = document.getElementById('suEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('suPass').value;
+      const question = document.getElementById('suSecurityQuestion').value;
+      const answer = document.getElementById('suSecurityAnswer').value.trim();
+      if(name.length < 2){ showAlert('error','Enter your full name.'); return; }
+      if(!/^\S+@\S+\.\S+$/.test(email)){ showAlert('error','Enter a valid email address.'); return; }
+      if(pass.length < 8 || !/[a-zA-Z]/.test(pass) || !/[0-9]/.test(pass)){ showAlert('error','Password must be at least 8 characters and include a letter and a number.'); return; }
+      if(!question){ showAlert('error','Choose a security question.'); return; }
+      if(answer.length < 2){ showAlert('error','Enter an answer to your security question.'); return; }
+      const submitBtn = e.target.querySelector('button[type=submit]');
+      submitBtn.disabled = true;
+      const res = await window.LedgerAuth.signup(name, email, pass, question, answer);
+      submitBtn.disabled = false;
+      if(!res.ok){ showAlert('error', res.msg); return; }
+      showAlert('success','Account created.');
+      refreshSessionUI();
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if(!window.LedgerRateLimiter.allow('login', 5, 60000)){
+        showAlert('error', 'Too many login attempts — please wait a minute before trying again.');
+        return;
+      }
+      const email = document.getElementById('liEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('liPass').value;
+      const submitBtn = e.target.querySelector('button[type=submit]');
+      submitBtn.disabled = true;
+      const res = await window.LedgerAuth.login(email, pass);
+      submitBtn.disabled = false;
+      if(!res.ok){ showAlert('error', res.msg); return; }
+      showAlert('success','Logged in.');
+      refreshSessionUI();
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+      await window.LedgerAuth.logout();
+      refreshSessionUI();
+    });
+
+    document.getElementById('changePasswordForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const current = document.getElementById('currentPassword').value;
+      const next = document.getElementById('newPassword').value;
+      if(next.length < 8 || !/[a-zA-Z]/.test(next) || !/[0-9]/.test(next)){
+        showFormAlert('pwError','pwSuccess','error','New password must be at least 8 characters and include a letter and a number.');
+        return;
+      }
+      const res = await window.LedgerAuth.changePassword(current, next);
+      if(!res.ok){ showFormAlert('pwError','pwSuccess','error', res.msg); return; }
+      showFormAlert('pwError','pwSuccess','success','Password updated.');
+      document.getElementById('changePasswordForm').reset();
+    });
+
+    document.getElementById('deleteAccountForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const confirmed = confirm('This permanently deletes your account. This cannot be undone. Continue?');
+      if(!confirmed) return;
+      const password = document.getElementById('deletePassword').value;
+      const res = await window.LedgerAuth.deleteAccount(password);
+      if(!res.ok){ document.getElementById('delError').textContent = res.msg; document.getElementById('delError').classList.add('show'); return; }
+      refreshSessionUI();
+    });
+
+    // ---- Forgot password (security question) ----
+    document.getElementById('showForgotBtn').addEventListener('click', ()=>{
+      document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+      switchAuthPanel('forgotPanel');
+      document.getElementById('forgotEmailForm').style.display = 'block';
+      document.getElementById('forgotAnswerForm').style.display = 'none';
+    });
+
+    document.getElementById('backToLoginBtn').addEventListener('click', ()=>{
+      document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+      switchAuthPanel('loginPanel');
+    });
+
+    document.getElementById('forgotEmailForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if(!window.LedgerRateLimiter.allow('forgot', 8, 60000)){
+        showAlert('error', 'Too many attempts — please wait a minute before trying again.');
+        return;
+      }
+      const email = document.getElementById('frEmail').value.trim().toLowerCase();
+      const res = await window.LedgerAuth.getSecurityQuestion(email);
+      if(!res.ok){ showAlert('error', res.msg); return; }
+      document.getElementById('frQuestion').textContent = res.question;
+      document.getElementById('forgotEmailForm').dataset.email = email;
+      document.getElementById('forgotEmailForm').style.display = 'none';
+      document.getElementById('forgotAnswerForm').style.display = 'block';
+    });
+
+    document.getElementById('forgotAnswerForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const email = document.getElementById('forgotEmailForm').dataset.email;
+      const answer = document.getElementById('frAnswer').value.trim();
+      const newPass = document.getElementById('frNewPass').value;
+      if(newPass.length < 8 || !/[a-zA-Z]/.test(newPass) || !/[0-9]/.test(newPass)){
+        showAlert('error','New password must be at least 8 characters and include a letter and a number.');
+        return;
+      }
+      const res = await window.LedgerAuth.resetWithAnswer(email, answer, newPass);
+      if(!res.ok){ showAlert('error', res.msg); return; }
+      showAlert('success','Password reset — you can log in with your new password now.');
+      document.getElementById('forgotAnswerForm').reset();
+      document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+      switchAuthPanel('loginPanel');
+    });
+  });
+</script>
+</body>
+</html>

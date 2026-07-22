@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — Ledger</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="ticker-wrap"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>
+      Ledger
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+      <a href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M12 19V5M20 19v-6"/></svg>Analysis</a>
+      <a href="leaderboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8M12 17v4M6 4h12v4a6 6 0 01-12 0V4z"/></svg>Leaderboard</a>
+      <a href="signals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Move signals</a>
+      <a href="faq.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2 1.8-2 3.2M12 17h.01"/></svg>FAQ</a>
+      <a href="account.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>Account</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="account.html" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="account.html" class="btn btn-brass btn-sm">Create account</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-bottom:20px;">
+    <div class="container">
+      <span class="eyebrow">FAQ</span>
+      <h1 style="font-size:clamp(1.7rem,3vw,2.3rem);">Questions, answered plainly</h1>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container" style="max-width:760px;">
+      <div id="faqList">
+        <div class="faq-item open" id="data">
+          <button class="faq-q">Is the price data on this site real? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>Yes — prices come from Finnhub, a real market-data provider, refreshed roughly every 15 seconds. Worth knowing: our current provider tier can run up to about 20 minutes behind the live market, so treat prices as 'recent,' not tick-by-tick.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Can Ledger actually predict the market? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>No tool can reliably predict short-term stock prices — markets react to news, earnings, and events that no chart can see in advance. The "move signals" page describes recent trend, momentum, and volatility using standard, transparent technical indicators. That's a read of the past, not a forecast of the future, and it should never be the sole basis for a financial decision.</p></div>
+        </div>
+        <div class="faq-item" id="disclaimer">
+          <button class="faq-q">Is this financial advice? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>No. Ledger is an educational tool, not a registered investment advisor, broker, or financial planner. Nothing on this site is a recommendation to buy, sell, or hold any security. Talk to a licensed financial advisor before making investment decisions, and only invest what you can afford to lose.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is everything on this site real? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>Prices and accounts, yes — real market data and permanently saved, securely hashed accounts. The one honest exception: the 'estimated volume' figure on the Analysis page is a rough estimate, not a real trade count, and is labeled as such.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is my account information secure? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>Your password is never stored as readable text — it's run through bcrypt, a one-way scrambling method, before being saved. Accounts are saved permanently in a private data store, login attempts are rate-limited, and repeated failed logins lock an account temporarily. As with any site, use a password you don't reuse elsewhere</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Why do you show sectors like tech, AI, and agriculture separately? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>A 3% move means something different in a volatile AI stock than in a stable utility. Grouping by sector — Technology, Artificial Intelligence, Aerospace &amp; Defense, Agriculture, Automotive, Energy, Healthcare, and Financials — lets you compare a stock against realistic peers instead of the whole market at once.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Does Ledger favor any stock, sector, or broker? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>No. Every stock is scored with the same public-style formula shown on the "How a signal is built" section of the Move signals page. Ledger doesn't accept placement fees, sponsored rankings, or paid promotion of any ticker.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Why does the chart update while I'm looking at it? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>With live mode on, the page checks your backend for fresh prices every 15 seconds and redraws the affected charts and tables without a full page reload — no simulation involved, just a real (if slightly delayed) quote each time.</p></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 Ledger. Educational tool ONLY — not a registered investment advisor.</span>
+      <span>Real Market Data — see FAQ</span>
+<span><a href="terms.html" style="color:inherit;">Terms</a> · <a href="privacy.html" style="color:inherit;">Privacy</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

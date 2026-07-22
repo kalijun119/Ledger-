@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Move signals — Ledger</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="ticker-wrap"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>
+      Ledger
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+      <a href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M12 19V5M20 19v-6"/></svg>Analysis</a>
+      <a href="leaderboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8M12 17v4M6 4h12v4a6 6 0 01-12 0V4z"/></svg>Leaderboard</a>
+      <a href="signals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Move signals</a>
+      <a href="faq.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2 1.8-2 3.2M12 17h.01"/></svg>FAQ</a>
+      <a href="account.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>Account</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="account.html" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="account.html" class="btn btn-brass btn-sm">Create account</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-bottom:0;">
+    <div class="container">
+      <span class="eyebrow">Move signals</span>
+      <h1 style="font-size:clamp(1.7rem,3vw,2.3rem);">What the trend indicators say right now</h1>
+
+      <div class="signal-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+        <p><strong>This page is not financial advice, and no one — including Ledger — can reliably predict short-term market moves.</strong> "Add," "Trim," and "Hold" below are plain-language labels for standard trend indicators (moving-average position, momentum, and volatility) computed from the price history shown elsewhere on this site. They describe where a stock has recently been, not where it will go. Markets are affected by news, earnings, and events no indicator can see coming. Always do your own research and consider talking to a licensed financial advisor before moving money.</p>
+      </div>
+
+      <div class="sector-row" id="sectorChips" style="margin-bottom:26px;"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="grid-3" id="signalGrid"></div>
+    </div>
+  </section>
+
+  <hr class="hairline">
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>How a signal is built</h2></div>
+      <div class="grid-3">
+        <div class="card">
+          <span class="eyebrow">1. Trend</span>
+          <h3 style="font-size:1.05rem;">Short vs. long average</h3>
+          <p>Compares a 5-point average to a 20-point average. Short-term above long-term is read as firming; the reverse is read as softening.</p>
+        </div>
+        <div class="card">
+          <span class="eyebrow">2. Momentum</span>
+          <h3 style="font-size:1.05rem;">Recent direction</h3>
+          <p>Looks at how consistently the last several moves pointed the same way, as a rough stand-in for momentum.</p>
+        </div>
+        <div class="card">
+          <span class="eyebrow">3. Volatility</span>
+          <h3 style="font-size:1.05rem;">How much it swings</h3>
+          <p>Wider recent swings lower the confidence score, since a noisy trend is a less reliable one.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 Ledger. Educational demo — not a registered investment advisor.</span>
+      <span>Real Market Data — see FAQ</span>
+<span><a href="terms.html" style="color:inherit;">Terms</a> · <a href="privacy.html" style="color:inherit;">Privacy</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/live-data.js"></script>
+<script>
+let activeSector = '';
+  const dailyCache = {}; // ticker -> { closes, dates } from real daily history, shared across cards
+
+  function renderChips(){
+    const wrap = document.getElementById('sectorChips');
+    const all = ['', ...window.LedgerSectors];
+    wrap.innerHTML = all.map(s=>{
+      const label = s === '' ? 'All sectors' : s;
+      return `<button class="chip ${activeSector===s?'active':''}" data-sector="${s}">${label}</button>`;
+    }).join('');
+    wrap.querySelectorAll('.chip').forEach(chip=>{
+      chip.addEventListener('click', ()=>{ activeSector = chip.dataset.sector; renderChips(); renderSignals(); });
+    });
+  }
+
+  function sma(arr,n){ const s = arr.slice(-Math.min(n,arr.length)); return s.reduce((a,b)=>a+b,0)/s.length; }
+  function stddev(arr){ const m = arr.reduce((a,b)=>a+b,0)/arr.length; return Math.sqrt(arr.reduce((a,b)=>a+(b-m)*(b-m),0)/arr.length); }
+
+  function computeSignal(closes){
+    const s5 = sma(closes,5), s20 = sma(closes,20);
+    const trendUp = s5 > s20;
+    const recent = closes.slice(-6);
+    let ups = 0;
+    for(let i=1;i<recent.length;i++) if(recent[i] >= recent[i-1]) ups++;
+    const momentum = recent.length > 1 ? ups / (recent.length-1) : 0.5;
+    const vol = stddev(closes.slice(-20));
+    const volPct = vol / closes[closes.length-1];
+    let confidence = trendUp ? momentum : (1-momentum);
+    confidence = Math.max(0.05, Math.min(0.95, confidence - volPct*4));
+
+    let verdict, cls;
+    if(trendUp && confidence > 0.55){ verdict='Add — trend firming'; cls='verdict-add'; }
+    else if(!trendUp && confidence > 0.55){ verdict='Trim — trend softening'; cls='verdict-trim'; }
+    else { verdict='Hold — no clear edge'; cls='verdict-hold'; }
+
+    return { trendUp, confidence, verdict, cls, s5, s20, volPct };
+  }
+
+  function cardLoading(s){
+    return `<div class="signal-card" id="card-${s.t}">
+      <div class="signal-meta"><span>${s.t} · <span style="color:var(--slate-dim)">${s.s}</span></span></div>
+      <p style="font-size:.84rem;color:var(--slate-dim);">Loading real daily history…</p>
+    </div>`;
+  }
+
+  function cardUnavailable(s){
+    const chg = window.LedgerPct(s);
+    return `<div class="signal-card" id="card-${s.t}">
+      <div class="signal-meta"><span>${s.t} · <span style="color:var(--slate-dim)">${s.s}</span></span><span class="${chg>=0?'pos':'neg'}" id="badge-${s.t}">${chg>=0?'▲':'▼'} ${Math.abs(chg).toFixed(2)}%</span></div>
+      <p style="font-size:.84rem;color:var(--slate-dim);">Needs the live-data connection (with a Twelve Data key) to compute a real signal for this stock — see the FAQ.</p>
+      <a href="analysis.html#${s.t}" class="btn btn-ghost btn-sm">Full analysis →</a>
+    </div>`;
+  }
+
+  function cardReady(s, closes){
+    const sig = computeSignal(closes);
+    const chg = window.LedgerPct(s);
+    return `<div class="signal-card" id="card-${s.t}">
+      <div class="signal-meta"><span>${s.t} · <span style="color:var(--slate-dim)">${s.s}</span></span><span class="${chg>=0?'pos':'neg'}" id="badge-${s.t}">${chg>=0?'▲':'▼'} ${Math.abs(chg).toFixed(2)}%</span></div>
+      <div class="signal-verdict ${sig.cls}">${sig.verdict}</div>
+      <div>
+        <div class="mono" style="font-size:.72rem;color:var(--slate-dim);margin-bottom:4px;">Confidence · ${(sig.confidence*100).toFixed(0)}%</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(sig.confidence*100).toFixed(0)}%"></div></div>
+      </div>
+      <p style="font-size:.84rem;margin:6px 0 0;">5-day avg $${sig.s5.toFixed(2)} vs 20-day avg $${sig.s20.toFixed(2)}, from real daily closes. Recent daily volatility ≈ ${(sig.volPct*100).toFixed(1)}% of price.</p>
+      <a href="analysis.html#${s.t}" class="btn btn-ghost btn-sm">Full analysis →</a>
+    </div>`;
+  }
+
+  async function loadSignal(s){
+    if(!window.LedgerFetchRealHistory){
+      const el = document.getElementById(`card-${s.t}`);
+      if(el) el.outerHTML = cardUnavailable(s);
+      return;
+    }
+    if(!dailyCache[s.t]){
+      const result = await window.LedgerFetchRealHistory(s.t);
+      if(!result || !result.closes || result.closes.length < 5){
+        const el = document.getElementById(`card-${s.t}`);
+        if(el) el.outerHTML = cardUnavailable(s);
+        return;
+      }
+      dailyCache[s.t] = result;
+    }
+    const el = document.getElementById(`card-${s.t}`);
+    if(el) el.outerHTML = cardReady(s, dailyCache[s.t].closes);
+  }
+
+  function renderSignals(){
+    const pool = window.LedgerStocks.filter(s=> !activeSector || s.s===activeSector);
+    document.getElementById('signalGrid').innerHTML = pool.map(cardLoading).join('');
+    pool.forEach(loadSignal);
+  }
+
+  function refreshBadges(){
+    window.LedgerStocks.forEach((s)=>{
+      const badge = document.getElementById(`badge-${s.t}`);
+      if(!badge) return;
+      const chg = window.LedgerPct(s);
+      badge.textContent = `${chg>=0?'▲':'▼'} ${Math.abs(chg).toFixed(2)}%`;
+      badge.className = chg>=0 ? 'pos' : 'neg';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', ()=>{ renderChips(); renderSignals(); });
+  document.addEventListener('ledger:tick', refreshBadges);
+</script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analysis — Ledger</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="ticker-wrap"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>
+      Ledger
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+      <a href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M12 19V5M20 19v-6"/></svg>Analysis</a>
+      <a href="leaderboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8M12 17v4M6 4h12v4a6 6 0 01-12 0V4z"/></svg>Leaderboard</a>
+      <a href="signals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Move signals</a>
+      <a href="faq.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2 1.8-2 3.2M12 17h.01"/></svg>FAQ</a>
+      <a href="account.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>Account</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="account.html" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="account.html" class="btn btn-brass btn-sm">Create account</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-bottom:0;">
+    <div class="container">
+      <span class="eyebrow">Analysis</span>
+      <h1 style="font-size:clamp(1.7rem,3vw,2.3rem);">Look up any tracked stock</h1>
+      <div class="search-row" style="margin:16px 0 26px;max-width:640px;">
+        <input type="text" id="tickerSearch" placeholder="Search by ticker or company — e.g. NVDA, Tesla" list="tickerList">
+        <datalist id="tickerList"></datalist>
+        <select id="sectorFilter" style="max-width:220px;"></select>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="chart-panel">
+        <div class="chart-head">
+          <div>
+            <span class="tag" id="stockSector">—</span>
+            <h2 id="stockName" style="margin:.3em 0 0;">—</h2>
+            <div class="chart-price mono" id="stockPrice">—</div>
+            <div class="mono" id="stockChange"></div>
+          </div>
+          <div style="text-align:right;">
+            <span class="badge-live"><span class="dot"></span>Live</span>
+            <div class="range-row" id="rangeRow">
+              <button class="range-btn" data-range="20">20</button>
+              <button class="range-btn active" data-range="60">60</button>
+              <button class="range-btn" data-range="120">All</button>
+	      <button class="range-btn" data-range="daily">Daily</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-canvas-holder"><canvas id="stockChart"></canvas></div>
+      </div>
+
+      <div class="grid-3" style="margin-top:22px;">
+        <div class="card">
+          <span class="eyebrow">Session</span>
+          <table style="margin-top:8px;">
+            <tr><td>Open</td><td class="num" id="statOpen">—</td></tr>
+            <tr><td>Prev. close</td><td class="num" id="statPrev">—</td></tr>
+            <tr><td>Session range</td><td class="num" id="statRange">—</td></tr>
+            <tr><td>Estimated Daily Volume</td><td class="num" id="statVol">—</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <span class="eyebrow">Trend read</span>
+          <table style="margin-top:8px;">
+            <tr><td>5-pt average</td><td class="num" id="statSma5">—</td></tr>
+            <tr><td>20-pt average</td><td class="num" id="statSma20">—</td></tr>
+            <tr><td>Trend</td><td class="num" id="statTrend">—</td></tr>
+            <tr><td>Volatility (σ)</td><td class="num" id="statVolatility">—</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <span class="eyebrow">What this means</span>
+          <p id="statExplain" style="font-size:.9rem;margin-top:8px;">Select a stock to see a plain-language read of its recent trend.</p>
+          <a href="signals.html" class="btn btn-ghost btn-sm" style="margin-top:6px;">See the full move signal →</a>
+        </div>
+      </div>
+
+      <p class="disclaimer">Moving averages and volatility are computed live from real price history once connected to live data (see FAQ) — the calculation method is fully shown above, not hidden. Volume is an estimate, not a real trade count. This is educational content, not investment advice."    
+</div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 Ledger. Educational tool ONLY — not a registered investment advisor.</span>
+      <span>Live Market  — see FAQ</span>
+<span><a href="terms.html" style="color:inherit;">Terms</a> · <a href="privacy.html" style="color:inherit;">Privacy</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="js/main.js"></script>
+<script src="js/live-data.js"></script>
+<script>
+  let currentTicker = null;
+  let range = 60;
+  let stockChart;
+
+  function populateControls(){
+    const list = document.getElementById('tickerList');
+    list.innerHTML = window.LedgerStocks.map(s=>`<option value="${s.t} — ${s.n}">`).join('');
+    const sel = document.getElementById('sectorFilter');
+    sel.innerHTML = '<option value="">All sectors</option>' + window.LedgerSectors.map(s=>`<option value="${s}">${s}</option>`).join('');
+  }
+
+  function findStock(query){
+    if(!query) return null;
+    const trimmed = query.trim();
+    if(!trimmed) return null;
+    const dashSplit = trimmed.split(' — ');
+    if(dashSplit.length > 1){
+      const tickerPart = dashSplit[0].trim().toUpperCase();
+      const exact = window.LedgerStocks.find(s => s.t === tickerPart);
+      if(exact) return exact;
+    }
+    const upper = trimmed.toUpperCase();
+    return window.LedgerStocks.find(s => s.t === upper) ||
+           window.LedgerStocks.find(s => s.n.toUpperCase().includes(upper)) ||
+           null;
+  }
+  function sma(arr, n){
+    if(arr.length < n) n = arr.length;
+    const slice = arr.slice(-n);
+    return slice.reduce((a,b)=>a+b,0) / slice.length;
+  }
+  function stddev(arr){
+    const m = arr.reduce((a,b)=>a+b,0)/arr.length;
+    const v = arr.reduce((a,b)=>a+(b-m)*(b-m),0)/arr.length;
+    return Math.sqrt(v);
+  }
+
+  let dailyMode = false;
+  const dailyCache = {};
+
+  function render(){
+    if(dailyMode) renderDaily();
+    else renderStock();
+  }
+
+  function renderStock(){
+    if(!currentTicker) return;
+    const s = window.LedgerStocks.find(x=>x.t===currentTicker);
+    if(!s) return;
+    const hist = s.history.slice(-range);
+    const chg = window.LedgerPct(s);
+
+    document.getElementById('stockSector').textContent = s.s;
+    document.getElementById('stockName').textContent = `${s.t} · ${s.n}`;
+    document.getElementById('stockPrice').textContent = '$' + s.price.toFixed(2);
+    const chgEl = document.getElementById('stockChange');
+    chgEl.textContent = (chg>=0?'▲ ':'▼ ') + Math.abs(chg).toFixed(2) + '% since open';
+    chgEl.className = 'mono ' + (chg>=0?'pos':'neg');
+
+    document.getElementById('statOpen').textContent = '$' + s.open.toFixed(2);
+    document.getElementById('statPrev').textContent = '$' + s.prevClose.toFixed(2);
+    document.getElementById('statRange').textContent = '$' + Math.min(...hist).toFixed(2) + ' – $' + Math.max(...hist).toFixed(2);
+    document.getElementById('statVol').textContent = (Math.round((s.vol*4200000))).toLocaleString();
+
+    const s5 = sma(s.history, 5), s20 = sma(s.history, 20);
+    document.getElementById('statSma5').textContent = '$' + s5.toFixed(2);
+    document.getElementById('statSma20').textContent = '$' + s20.toFixed(2);
+    const trendUp = s5 >= s20;
+    const trendEl = document.getElementById('statTrend');
+    trendEl.textContent = trendUp ? 'Short-term above long-term' : 'Short-term below long-term';
+    trendEl.className = 'num ' + (trendUp ? 'pos':'neg');
+    const vol = stddev(hist);
+    document.getElementById('statVolatility').textContent = vol.toFixed(2);
+
+    document.getElementById('statExplain').textContent =
+      `${s.t}'s 5-point average is ${trendUp ? 'above' : 'below'} its 20-point average, which technical readers usually treat as a ${trendUp ? 'firming' : 'softening'} short-term trend. Recent volatility of ±$${vol.toFixed(2)} means daily swings of that size are common — treat any single day's move with that in mind.`;
+
+    const color = chg>=0 ? '#12694F' : '#A6303B';
+    const labels = window.LedgerTimeLabels(hist.length);
+    if(stockChart){
+      stockChart.data.labels = labels;
+      stockChart.data.datasets[0] = window.LedgerLineDataset(hist, color);
+      stockChart.update('none');
+    } else {
+      stockChart = new Chart(document.getElementById('stockChart'), {
+        type:'line',
+        data:{ labels, datasets:[ window.LedgerLineDataset(hist, color) ] },
+        options: window.LedgerChartOptionsBase()
+      });
+    }
+  }
+
+  async function renderDaily(){
+    if(!currentTicker) return;
+    const s = window.LedgerStocks.find(x=>x.t===currentTicker);
+    if(!s) return;
+    const chg = window.LedgerPct(s);
+
+    document.getElementById('stockSector').textContent = s.s;
+    document.getElementById('stockName').textContent = `${s.t} · ${s.n}`;
+    document.getElementById('stockPrice').textContent = '$' + s.price.toFixed(2);
+    const chgEl = document.getElementById('stockChange');
+    chgEl.textContent = (chg>=0?'▲ ':'▼ ') + Math.abs(chg).toFixed(2) + '% since open';
+    chgEl.className = 'mono ' + (chg>=0?'pos':'neg');
+    document.getElementById('statOpen').textContent = '$' + s.open.toFixed(2);
+    document.getElementById('statPrev').textContent = '$' + s.prevClose.toFixed(2);
+    document.getElementById('statVol').textContent = (Math.round((s.vol*4200000))).toLocaleString();
+
+    if(!window.LedgerFetchRealHistory){
+      document.getElementById('statExplain').textContent = 'Daily calendar view needs the live-data connection turned on.';
+      return;
+    }
+
+    if(!dailyCache[currentTicker]){
+      document.getElementById('statExplain').textContent = 'Loading real daily history…';
+      const result = await window.LedgerFetchRealHistory(currentTicker);
+      if(!result){
+        document.getElementById('statExplain').textContent = 'Could not load daily history right now — try the 20/60/All view instead.';
+        return;
+      }
+      dailyCache[currentTicker] = result;
+    }
+
+    const { closes, dates } = dailyCache[currentTicker];
+    const color = chg>=0 ? '#12694F' : '#A6303B';
+    const labels = dates.map((d)=> d.toLocaleDateString([], { month:'short', day:'numeric' }));
+
+    if(stockChart){
+      stockChart.data.labels = labels;
+      stockChart.data.datasets[0] = window.LedgerLineDataset(closes, color);
+      stockChart.update('none');
+    } else {
+      stockChart = new Chart(document.getElementById('stockChart'), {
+        type:'line',
+        data:{ labels, datasets:[ window.LedgerLineDataset(closes, color) ] },
+        options: window.LedgerChartOptionsBase()
+      });
+    }
+
+    document.getElementById('statRange').textContent = '$' + Math.min(...closes).toFixed(2) + ' – $' + Math.max(...closes).toFixed(2);
+    const s5 = sma(closes, 5), s20 = sma(closes, 20);
+    document.getElementById('statSma5').textContent = '$' + s5.toFixed(2);
+    document.getElementById('statSma20').textContent = '$' + s20.toFixed(2);
+    const trendUp = s5 >= s20;
+    const trendEl = document.getElementById('statTrend');
+    trendEl.textContent = trendUp ? 'Short-term above long-term' : 'Short-term below long-term';
+    trendEl.className = 'num ' + (trendUp ? 'pos':'neg');
+    const vol = stddev(closes.slice(-20));
+    document.getElementById('statVolatility').textContent = vol.toFixed(2);
+    document.getElementById('statExplain').textContent =
+      `${s.t}'s 5-day average is ${trendUp ? 'above' : 'below'} its 20-day average, based on real daily closes. Recent day-to-day volatility of ±$${vol.toFixed(2)} is normal.`;
+  }
+
+  document.addEventListener('DOMContentLoaded', ()=>{
+    populateControls();
+   const initial = decodeURIComponent(location.hash.slice(1));
+    currentTicker = (initial && window.LedgerStocks.find(s=>s.t===initial.toUpperCase())) ? initial.toUpperCase() : window.LedgerStocks[0].t;
+    document.getElementById('tickerSearch').value = currentTicker;
+    render();
+
+    document.getElementById('tickerSearch').addEventListener('input', (e)=>{
+      if(!window.LedgerRateLimiter.allow('search', 20, 10000)) return;
+      const found = findStock(e.target.value);
+      if(found){ currentTicker = found.t; render(); }
+    });
+    document.getElementById('sectorFilter').addEventListener('change', (e)=>{
+      const sector = e.target.value;
+      if(!sector) return;
+      const first = window.LedgerStocks.find(s=>s.s===sector);
+      if(first){ currentTicker = first.t; document.getElementById('tickerSearch').value = first.t; render(); }
+    });
+    document.querySelectorAll('.range-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        if(btn.dataset.range === 'daily'){
+          dailyMode = true;
+          renderDaily();
+        } else {
+          dailyMode = false;
+          range = +btn.dataset.range;
+          renderStock();
+        }
+      });
+    });
+  });
+  document.addEventListener('ledger:tick', render);
+</script>
+</body>
+</html>
