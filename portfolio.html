@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Ledger</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="description" content="Practice investing with a free paper-trading portfolio using real live prices — zero real risk, real market movement.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="ticker-wrap"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l6-6 4 4 8-9"/><path d="M15 6h6v6"/></svg>
+      Ledger
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+      <a href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V9M12 19V5M20 19v-6"/></svg>Analysis</a>
+      <a href="leaderboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 21h8M12 17v4M6 4h12v4a6 6 0 01-12 0V4z"/></svg>Leaderboard</a>
+      <a href="signals.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Move signals</a>
+      <a href="screener.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Screener</a>
+      <a href="portfolio.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18M3 12h18M3 17h18"/></svg>Portfolio</a>
+      <a href="faq.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2 1.8-2 3.2M12 17h.01"/></svg>FAQ</a>
+      <a href="account.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>Account</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="account.html" class="btn btn-ghost btn-sm">Log in</a>
+      <a href="account.html" class="btn btn-brass btn-sm">Create account</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-bottom:0;">
+    <div class="container">
+      <span class="eyebrow">Paper trading</span>
+      <h1 style="font-size:clamp(1.7rem,3vw,2.3rem);">Your portfolio</h1>
+      <p style="max-width:60ch;">Practice with $100,000 in pretend money against real, live prices. Nothing here is real money — it's a sandbox for testing decisions and watching real market movement play out.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:20px;">
+    <div class="container">
+
+      <div id="loggedOutNotice" class="signal-banner" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>
+        <p>Log in or create a free account to start paper trading. <a href="account.html" style="color:#fff;text-decoration:underline;">Go to Account →</a></p>
+      </div>
+
+      <div id="portfolioContent" style="display:none;">
+        <div class="stat-strip" style="border:1px solid var(--rule);border-radius:var(--radius);margin-bottom:26px;">
+          <div class="stat"><div class="num mono" id="statCash">—</div><div class="lbl">Cash available</div></div>
+          <div class="stat"><div class="num mono" id="statHoldingsValue">—</div><div class="lbl">Holdings value</div></div>
+          <div class="stat"><div class="num mono" id="statTotalValue">—</div><div class="lbl">Total portfolio value</div></div>
+          <div class="stat"><div class="num mono" id="statGainLoss">—</div><div class="lbl">Total gain/loss</div></div>
+        </div>
+
+        <div class="grid-2" style="align-items:start;">
+          <div>
+            <div class="section-head" style="margin-bottom:14px;"><h2 style="font-size:1.15rem;">Holdings</h2></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Ticker</th><th>Shares</th><th>Avg cost</th><th>Price</th><th>Value</th><th>Gain/Loss</th></tr></thead>
+                <tbody id="holdingsBody"><tr><td colspan="6" style="text-align:center;color:var(--slate-dim);">No holdings yet.</td></tr></tbody>
+              </table>
+            </div>
+
+            <div class="card" style="margin-top:22px;">
+              <span class="eyebrow">Trade</span>
+              <div class="alert alert-error" id="tradeError" style="margin-top:10px;"></div>
+              <div class="alert alert-success" id="tradeSuccess"></div>
+              <div class="field"><label for="tradeTicker">Stock</label>
+                <select id="tradeTicker"></select>
+              </div>
+              <div class="field"><label for="tradeShares">Shares</label><input type="number" id="tradeShares" min="0.01" step="0.01" placeholder="e.g. 10"></div>
+              <div style="display:flex;gap:.6rem;">
+                <button id="buyBtn" class="btn btn-primary" style="flex:1;">Buy</button>
+                <button id="sellBtn" class="btn btn-ghost" style="flex:1;">Sell</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-head" style="margin-bottom:14px;"><h2 style="font-size:1.15rem;">Diversification</h2></div>
+            <div class="card">
+              <div id="diversificationBody"><p style="font-size:.9rem;color:var(--slate-dim);">Buy something to see your sector breakdown.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="disclaimer">This is a paper-trading sandbox using pretend money — no real trades are placed, no real brokerage is involved. Educational only, not investment advice.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 Ledger. Educational tool — not a registered investment advisor.</span>
+      <span>Live market data — see FAQ</span>
+      <span><a href="terms.html" style="color:inherit;">Terms</a> · <a href="privacy.html" style="color:inherit;">Privacy</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/auth-client.js"></script>
+<script src="js/portfolio-client.js"></script>
+<script>
+  const SECTOR_COLORS = ['#12694F','#B08D57','#A6303B','#3B5B8C','#7A5AA8','#C4772E','#4B5563','#1E7C7C','#8A5A44','#5E7A2E'];
+
+  function fmtMoney(n){
+    const sign = n < 0 ? '-' : '';
+    return sign + '$' + Math.abs(n).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  function populateTradeSelect(){
+    const sel = document.getElementById('tradeTicker');
+    sel.innerHTML = window.LedgerStocks.map(s=>`<option value="${s.t}">${s.t} — ${s.n}</option>`).join('');
+  }
+
+  function renderDiversification(holdings){
+    const body = document.getElementById('diversificationBody');
+    const withValue = holdings.filter(h=>h.marketValue !== null && h.marketValue > 0);
+    if(withValue.length === 0){
+      body.innerHTML = '<p style="font-size:.9rem;color:var(--slate-dim);">Buy something to see your sector breakdown.</p>';
+      return;
+    }
+    const bySector = {};
+    let total = 0;
+    withValue.forEach(h=>{
+      const s = window.LedgerStocks.find(x=>x.t===h.ticker);
+      const sector = s ? s.s : 'Other';
+      bySector[sector] = (bySector[sector] || 0) + h.marketValue;
+      total += h.marketValue;
+    });
+    const sectors = Object.entries(bySector).sort((a,b)=>b[1]-a[1]);
+    const topPct = (sectors[0][1] / total) * 100;
+
+    let message;
+    if(sectors.length === 1) message = `Everything is in ${sectors[0][0]} — no diversification at all yet.`;
+    else if(topPct > 60) message = `Heavily concentrated — ${topPct.toFixed(0)}% of your portfolio sits in ${sectors[0][0]} alone.`;
+    else if(topPct > 40) message = `Fairly concentrated in ${sectors[0][0]} (${topPct.toFixed(0)}%), with some spread into ${sectors.length-1} other sector(s).`;
+    else message = `Reasonably spread across ${sectors.length} sectors — no single sector dominates your holdings.`;
+
+    const bars = sectors.map(([sector, value], i)=>{
+      const pct = (value/total)*100;
+      const color = SECTOR_COLORS[i % SECTOR_COLORS.length];
+      return `<div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:4px;"><span>${sector}</span><span class="mono">${pct.toFixed(0)}%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct.toFixed(1)}%;background:${color};"></div></div>
+      </div>`;
+    }).join('');
+
+    body.innerHTML = `<p style="font-size:.88rem;margin-bottom:14px;">${message}</p>${bars}`;
+  }
+
+  async function renderPortfolio(){
+    const res = await window.LedgerPortfolio.get();
+    if(!res.ok) return;
+    const { cash, holdings } = res;
+    const holdingsValue = holdings.reduce((sum,h)=> sum + (h.marketValue || 0), 0);
+    const gainLoss = holdings.reduce((sum,h)=> sum + (h.gainLoss || 0), 0);
+
+    document.getElementById('statCash').textContent = fmtMoney(cash);
+    document.getElementById('statHoldingsValue').textContent = fmtMoney(holdingsValue);
+    document.getElementById('statTotalValue').textContent = fmtMoney(cash + holdingsValue);
+    const glEl = document.getElementById('statGainLoss');
+    glEl.textContent = (gainLoss>=0?'+':'') + fmtMoney(gainLoss);
+    glEl.className = 'num mono ' + (gainLoss>=0?'pos':'neg');
+
+    const body = document.getElementById('holdingsBody');
+    if(holdings.length === 0){
+      body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--slate-dim);">No holdings yet.</td></tr>';
+    } else {
+      body.innerHTML = holdings.map(h=>{
+        const glCls = (h.gainLoss||0) >= 0 ? 'pos' : 'neg';
+        return `<tr>
+          <td class="mono" style="font-weight:600;"><a href="analysis.html#${h.ticker}">${h.ticker}</a></td>
+          <td class="num">${h.shares}</td>
+          <td class="num">$${h.avgCost.toFixed(2)}</td>
+          <td class="num">${h.currentPrice !== null ? '$'+h.currentPrice.toFixed(2) : '—'}</td>
+          <td class="num">${h.marketValue !== null ? fmtMoney(h.marketValue) : '—'}</td>
+          <td class="num ${glCls}">${h.gainLoss !== null ? (h.gainLoss>=0?'+':'')+fmtMoney(h.gainLoss) : '—'}</td>
+        </tr>`;
+      }).join('');
+    }
+    renderDiversification(holdings);
+  }
+
+  document.addEventListener('DOMContentLoaded', async ()=>{
+    await window.LedgerAuth.checkSession();
+    const loggedIn = !!window.LedgerAuth.get();
+    document.getElementById('loggedOutNotice').style.display = loggedIn ? 'none' : 'flex';
+    document.getElementById('portfolioContent').style.display = loggedIn ? 'block' : 'none';
+    if(!loggedIn) return;
+
+    populateTradeSelect();
+    renderPortfolio();
+
+    document.getElementById('buyBtn').addEventListener('click', async ()=>{
+      const ticker = document.getElementById('tradeTicker').value;
+      const shares = Number(document.getElementById('tradeShares').value);
+      if(!shares || shares <= 0){ document.getElementById('tradeError').textContent = 'Enter a positive number of shares.'; document.getElementById('tradeError').classList.add('show'); return; }
+      const res = await window.LedgerPortfolio.buy(ticker, shares);
+      document.getElementById('tradeError').classList.remove('show');
+      document.getElementById('tradeSuccess').classList.remove('show');
+      if(!res.ok){ document.getElementById('tradeError').textContent = res.msg; document.getElementById('tradeError').classList.add('show'); return; }
+      document.getElementById('tradeSuccess').textContent = 'Bought.'; document.getElementById('tradeSuccess').classList.add('show');
+      renderPortfolio();
+    });
+
+    document.getElementById('sellBtn').addEventListener('click', async ()=>{
+      const ticker = document.getElementById('tradeTicker').value;
+      const shares = Number(document.getElementById('tradeShares').value);
+      if(!shares || shares <= 0){ document.getElementById('tradeError').textContent = 'Enter a positive number of shares.'; document.getElementById('tradeError').classList.add('show'); return; }
+      const res = await window.LedgerPortfolio.sell(ticker, shares);
+      document.getElementById('tradeError').classList.remove('show');
+      document.getElementById('tradeSuccess').classList.remove('show');
+      if(!res.ok){ document.getElementById('tradeError').textContent = res.msg; document.getElementById('tradeError').classList.add('show'); return; }
+      document.getElementById('tradeSuccess').textContent = 'Sold.'; document.getElementById('tradeSuccess').classList.add('show');
+      renderPortfolio();
+    });
+  });
+  document.addEventListener('ledger:tick', ()=>{ if(window.LedgerAuth.get()) renderPortfolio(); });
+</script>
+</body>
+</html>
