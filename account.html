@@ -126,6 +126,13 @@
           <div id="watchlistItems" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
         </div>
         <div class="session-box" style="margin-top:20px;">
+          <span class="eyebrow">My price alerts</span>
+          <div id="alertsEmpty" style="display:none;">
+            <p style="font-size:.85rem;margin-top:10px;">No alerts set yet — set one from any stock's Analysis page.</p>
+          </div>
+          <div id="alertsItems" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+        <div class="session-box" style="margin-top:20px;">
           <span class="eyebrow">Change password</span>
           <div class="alert alert-error" id="pwError" style="margin-top:12px;"></div>
           <div class="alert alert-success" id="pwSuccess"></div>
@@ -164,6 +171,7 @@
 <script src="js/main.js"></script>
 <script src="js/auth-client.js"></script>
 <script src="js/watchlist-client.js"></script>
+<script src="js/alerts-client.js"></script>
 <script>
   function showAlert(kind, msg){
     const err = document.getElementById('authError'), ok = document.getElementById('authSuccess');
@@ -188,7 +196,8 @@
       document.getElementById('welcomeEmail').textContent = user.email;
       const joinedEl = document.getElementById('welcomeJoined');
       if(joinedEl) joinedEl.textContent = user.joined ? new Date(user.joined).toLocaleDateString() : '—';
-      renderWatchlist();
+     renderWatchlist();
+      renderAlerts();
     }
   }
 
@@ -215,7 +224,30 @@
       });
     });
   }
-
+async function renderAlerts(){
+    const itemsEl = document.getElementById('alertsItems');
+    const emptyEl = document.getElementById('alertsEmpty');
+    if(!itemsEl) return;
+    const res = await window.LedgerAlerts.list();
+    const alerts = res.ok ? res.alerts : [];
+    emptyEl.style.display = alerts.length ? 'none' : 'block';
+    itemsEl.innerHTML = alerts.map((a)=>{
+      const statusTag = a.triggered
+        ? `<span class="tag pos-bg pos" style="font-weight:600;">Triggered!</span>`
+        : `<span class="tag">Watching</span>`;
+      return `<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid var(--rule);border-radius:var(--radius);padding:10px 14px;">
+        <span class="mono">${a.ticker} ${a.direction} $${a.targetPrice.toFixed(2)} ${statusTag}</span>
+        <button class="btn btn-ghost btn-sm" data-remove-alert="${a.id}">Remove</button>
+      </div>`;
+    }).join('');
+    itemsEl.querySelectorAll('[data-remove-alert]').forEach((btn)=>{
+      btn.addEventListener('click', async ()=>{
+        btn.disabled = true;
+        await window.LedgerAlerts.remove(btn.dataset.removeAlert);
+        renderAlerts();
+      });
+    });
+  }
   function switchAuthPanel(panelId){
     document.querySelectorAll('.auth-panel').forEach(p=>p.classList.remove('active'));
     document.getElementById(panelId).classList.add('active');
