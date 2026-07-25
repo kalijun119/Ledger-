@@ -101,7 +101,39 @@
           <a href="signals.html" class="btn btn-ghost btn-sm" style="margin-top:6px;">See the full move signal →</a>
         </div>
       </div>
-
+<div class="grid-2" style="margin-top:22px;">
+        <div class="card">
+          <span class="eyebrow">Quick trade (paper)</span>
+          <p style="font-size:.85rem;margin:6px 0 10px;">Practice buying/selling this stock with pretend money. <a href="portfolio.html">View your full portfolio →</a></p>
+          <div id="tradeLoggedOut" style="display:none;"><p style="font-size:.85rem;color:var(--slate-dim);"><a href="account.html">Log in</a> to start paper trading.</p></div>
+          <div id="tradeLoggedIn">
+            <div class="alert alert-error" id="quickTradeError"></div>
+            <div class="alert alert-success" id="quickTradeSuccess"></div>
+            <div class="field" style="margin-bottom:8px;"><label for="quickTradeShares">Shares</label><input type="number" id="quickTradeShares" min="0.01" step="0.01" placeholder="e.g. 5"></div>
+            <div style="display:flex;gap:.6rem;">
+              <button id="quickBuyBtn" class="btn btn-primary btn-sm" style="flex:1;">Buy</button>
+              <button id="quickSellBtn" class="btn btn-ghost btn-sm" style="flex:1;">Sell</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <span class="eyebrow">Set a price alert</span>
+          <p style="font-size:.85rem;margin:6px 0 10px;">Get notified on your Account page when this stock crosses a price you choose.</p>
+          <div id="alertLoggedOut" style="display:none;"><p style="font-size:.85rem;color:var(--slate-dim);"><a href="account.html">Log in</a> to set alerts.</p></div>
+          <div id="alertLoggedIn">
+            <div class="alert alert-error" id="alertError"></div>
+            <div class="alert alert-success" id="alertSuccess"></div>
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              <select id="alertDirection" style="flex:1;">
+                <option value="above">Goes above</option>
+                <option value="below">Goes below</option>
+              </select>
+              <input type="number" id="alertTarget" step="0.01" placeholder="Target $" style="flex:1;">
+            </div>
+            <button id="setAlertBtn" class="btn btn-primary btn-sm btn-block">Set alert</button>
+          </div>
+        </div>
+      </div>
       <p class="disclaimer">Moving averages and volatility are computed live from real price history once connected to live data (see FAQ) — the calculation method is fully shown above, not hidden. Volume is an estimate, not a real trade count. This is educational content, not investment advice."    
 </div>
   </section>
@@ -121,6 +153,8 @@
 <script src="js/main.js"></script>
 <script src="js/auth-client.js"></script>
 <script src="js/watchlist-client.js"></script>
+<script src="js/portfolio-client.js"></script>
+<script src="js/alerts-client.js"></script>
 <script src="js/live-data.js"></script>
 <script>
   let currentTicker = null;
@@ -310,9 +344,50 @@ let watchlistCache = null;
     document.getElementById('tickerSearch').value = currentTicker;
     render();
 
-    await window.LedgerAuth.checkSession();
+   await window.LedgerAuth.checkSession();
     await loadWatchlistCache();
     updateWatchlistButton();
+
+    const loggedIn = !!window.LedgerAuth.get();
+    document.getElementById('tradeLoggedOut').style.display = loggedIn ? 'none' : 'block';
+    document.getElementById('tradeLoggedIn').style.display = loggedIn ? 'block' : 'none';
+    document.getElementById('alertLoggedOut').style.display = loggedIn ? 'none' : 'block';
+    document.getElementById('alertLoggedIn').style.display = loggedIn ? 'block' : 'none';
+
+    if(loggedIn){
+      document.getElementById('quickBuyBtn').addEventListener('click', async ()=>{
+        const shares = Number(document.getElementById('quickTradeShares').value);
+        document.getElementById('quickTradeError').classList.remove('show');
+        document.getElementById('quickTradeSuccess').classList.remove('show');
+        if(!shares || shares <= 0){ document.getElementById('quickTradeError').textContent = 'Enter a positive number of shares.'; document.getElementById('quickTradeError').classList.add('show'); return; }
+        const res = await window.LedgerPortfolio.buy(currentTicker, shares);
+        if(!res.ok){ document.getElementById('quickTradeError').textContent = res.msg; document.getElementById('quickTradeError').classList.add('show'); return; }
+        document.getElementById('quickTradeSuccess').textContent = `Bought ${shares} share(s) of ${currentTicker}.`;
+        document.getElementById('quickTradeSuccess').classList.add('show');
+      });
+      document.getElementById('quickSellBtn').addEventListener('click', async ()=>{
+        const shares = Number(document.getElementById('quickTradeShares').value);
+        document.getElementById('quickTradeError').classList.remove('show');
+        document.getElementById('quickTradeSuccess').classList.remove('show');
+        if(!shares || shares <= 0){ document.getElementById('quickTradeError').textContent = 'Enter a positive number of shares.'; document.getElementById('quickTradeError').classList.add('show'); return; }
+        const res = await window.LedgerPortfolio.sell(currentTicker, shares);
+        if(!res.ok){ document.getElementById('quickTradeError').textContent = res.msg; document.getElementById('quickTradeError').classList.add('show'); return; }
+        document.getElementById('quickTradeSuccess').textContent = `Sold ${shares} share(s) of ${currentTicker}.`;
+        document.getElementById('quickTradeSuccess').classList.add('show');
+      });
+      document.getElementById('setAlertBtn').addEventListener('click', async ()=>{
+        const direction = document.getElementById('alertDirection').value;
+        const target = Number(document.getElementById('alertTarget').value);
+        document.getElementById('alertError').classList.remove('show');
+        document.getElementById('alertSuccess').classList.remove('show');
+        if(!target || target <= 0){ document.getElementById('alertError').textContent = 'Enter a valid target price.'; document.getElementById('alertError').classList.add('show'); return; }
+        const res = await window.LedgerAlerts.create(currentTicker, direction, target);
+        if(!res.ok){ document.getElementById('alertError').textContent = res.msg; document.getElementById('alertError').classList.add('show'); return; }
+        document.getElementById('alertSuccess').textContent = `Alert set — check your Account page when ${currentTicker} crosses $${target}.`;
+        document.getElementById('alertSuccess').classList.add('show');
+        document.getElementById('alertTarget').value = '';
+      });
+    }
 
     document.getElementById('tickerSearch').addEventListener('input', (e)=>{
       if(!window.LedgerRateLimiter.allow('search', 20, 10000)) return;
