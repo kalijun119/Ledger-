@@ -8,8 +8,9 @@
 (function () {
   "use strict";
 
-  const API_BASE = "https://ledger-server-5ea8.onrender.com"; // change to your deployed backend URL — keep in sync with live-data.js/auth-client.js
-
+  const API_BASE = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+    ? "http://localhost:4000"
+    : ""; // deployed: relative path, proxied through vercel.json to Render — keeps the login cookie same-origin
   async function api(path, options = {}) {
     const res = await fetch(`${API_BASE}${path}`, {
       credentials: "include",
