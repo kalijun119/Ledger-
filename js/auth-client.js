@@ -10,7 +10,9 @@
 (function () {
   "use strict";
 
-  const API_BASE = "https://ledger-server-5ea8.onrender.com"; // change to your deployed backend URL
+  const API_BASE = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+    ? "http://localhost:4000"
+    : ""; // deployed: relative path, proxied through vercel.json to Render — keeps the login cookie same-origin
 
   let cachedUser = null;
 
